@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>İpuçları Yönetimi | Sporthink Gamification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-200">
+    <!-- SOL MENÜ -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">Sporthink Panel</h1>
+        </div>
+                        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="/admin" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-home w-6"></i> Dashboard</a>
+            <a href="/admin/products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-shopping-bag w-6"></i> Ürünler (Dükkan)</a>
+            <a href="/admin/chests" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-box-open w-6"></i> Sandık Sistemi</a>
+            <a href="/admin/users" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-users w-6"></i> Kullanıcılar</a>
+            <a href="/admin/stats" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-chart-line w-6"></i> İstatistik ve Loglar</a>
+            <a href="/admin/notifications" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-bell w-6"></i> Bildirimler</a>
+            <a href="/admin/tips" class="flex items-center px-4 py-3 bg-gradient-to-r from-teal-500/20 to-blue-500/20 text-teal-300 border border-teal-500/30 rounded-lg transition-colors"><i class="fas fa-lightbulb w-6"></i> İpuçları (Tips)</a>
+            <a href="/admin/settings" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-cogs w-6"></i> Ayarlar</a>
+            <a href="/admin/badges" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-award w-6"></i> Rozetler (Badges)</a>
+            <a href="/admin/avatar-items" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-astronaut w-6"></i> Avatar Parçaları</a>
+            <a href="/admin/admins" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-shield w-6"></i> Admin Yönetimi</a>
+        </nav>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="flex-1 flex flex-col bg-slate-900 overflow-y-auto">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-slate-700 glass-panel sticky top-0 z-10 rounded-none border-t-0 border-l-0 border-r-0">
+            <h2 class="text-xl font-semibold"><i class="fas fa-lightbulb mr-2 text-yellow-400"></i> İpuçları Yönetimi</h2>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-slate-400"><i class="fas fa-user-shield mr-1"></i> Admin</span>
+                <a href="/admin/logout" class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Çıkış
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6">
+            <!-- İpucu Ekleme Formu -->
+            <div class="glass-panel p-6 border border-slate-700">
+                <h3 class="text-xl font-bold mb-6 text-white border-b border-slate-700 pb-2"><i class="fas fa-plus-circle text-green-400"></i> Yeni İpucu Ekle</h3>
+                
+                <form action="/admin/tips/add" method="POST" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-slate-300">İpucu Metni</label>
+                        <textarea name="text" required rows="3" class="w-full px-4 py-2 border border-slate-600 rounded drop-shadow bg-slate-800 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Örn: Günde en az 2 litre su içmek metabolizmanızı hızlandırır."></textarea>
+                    </div>
+                    <button type="submit" class="mt-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded shadow transition-all">İpucunu Kaydet</button>
+                </form>
+            </div>
+
+            <!-- İpucu Listesi -->
+            <div class="glass-panel p-6 border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 text-white"><i class="fas fa-list text-purple-400"></i> Aktif İpuçları</h3>
+                
+                <div class="space-y-4 mt-4">
+                    <% if (tips && tips.length > 0) { %>
+                        <% tips.forEach(tip => { %>
+                            <div class="bg-slate-800 rounded-xl overflow-hidden shadow border <%= tip.is_active ? 'border-slate-700' : 'border-red-500/30 opacity-50' %> flex flex-col md:flex-row transition-transform hover:scale-[1.01]">
+                                <div class="p-4 flex-1 flex items-center">
+                                    <i class="fas fa-quote-left text-2xl text-slate-600 mr-4"></i>
+                                    <p class="text-lg text-slate-200 font-medium"><%= tip.text %></p>
+                                </div>
+                                <div class="p-4 bg-slate-900/50 flex items-center justify-end space-x-2 border-t md:border-t-0 md:border-l border-slate-700">
+                                    <form action="/admin/tips/toggle/<%= tip.id %>" method="POST">
+                                        <button type="submit" class="px-4 py-2 rounded font-medium text-sm <%= tip.is_active ? 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30' : 'bg-green-500/20 text-green-400 hover:bg-green-500/30' %> transition-colors">
+                                            <i class="fas <%= tip.is_active ? 'fa-eye-slash' : 'fa-eye' %> mr-1"></i> <%= tip.is_active ? 'Gizle' : 'Göster' %>
+                                        </button>
+                                    </form>
+                                    <form action="/admin/tips/delete/<%= tip.id %>" method="POST">
+                                        <button type="submit" class="px-4 py-2 rounded font-medium text-sm bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors" onclick="return confirm('Silmek istediğinize emin misiniz?');">
+                                            <i class="fas fa-trash-alt mr-1"></i> Sil
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="col-span-full p-8 text-center text-slate-500 bg-slate-800/50 rounded-lg border border-slate-700 border-dashed">
+                            <i class="fas fa-lightbulb text-4xl mb-3 text-slate-600"></i>
+                            <p>Henüz ipucu eklenmemiş.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+</body>
+</html>

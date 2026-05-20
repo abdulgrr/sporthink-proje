@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Parçaları | Sporthink Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-200">
+    <!-- SOL MENÜ -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">Sporthink Panel</h1>
+        </div>
+                        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="/admin" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-home w-6"></i> Dashboard</a>
+            <a href="/admin/products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-shopping-bag w-6"></i> Ürünler (Dükkan)</a>
+            <a href="/admin/chests" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-box-open w-6"></i> Sandık Sistemi</a>
+            <a href="/admin/users" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-users w-6"></i> Kullanıcılar</a>
+            <a href="/admin/stats" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-chart-line w-6"></i> İstatistik ve Loglar</a>
+            <a href="/admin/notifications" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-bell w-6"></i> Bildirimler</a>
+            <a href="/admin/tips" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-lightbulb w-6"></i> İpuçları (Tips)</a>
+            <a href="/admin/settings" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-cogs w-6"></i> Ayarlar</a>
+            <a href="/admin/badges" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-award w-6"></i> Rozetler (Badges)</a>
+            <a href="/admin/avatar-items" class="flex items-center px-4 py-3 bg-gradient-to-r from-teal-500/20 to-blue-500/20 text-teal-300 border border-teal-500/30 rounded-lg transition-colors"><i class="fas fa-user-astronaut w-6"></i> Avatar Parçaları</a>
+            <a href="/admin/admins" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-shield w-6"></i> Admin Yönetimi</a>
+        </nav>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="flex-1 flex flex-col bg-slate-900 overflow-y-auto">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-slate-700 glass-panel sticky top-0 z-10 rounded-none border-t-0 border-l-0 border-r-0">
+            <h2 class="text-xl font-semibold"><i class="fas fa-user-astronaut mr-2 text-teal-400"></i> Avatar Parçaları Yönetimi</h2>
+            <div class="flex items-center space-x-4">
+                <span class="bg-slate-700 text-slate-300 py-1 px-3 rounded-full text-xs font-bold"><%= items.length %> Parça</span>
+                <a href="/admin/logout" class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Çıkış
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6">
+            <!-- YENİ PARÇA EKLE -->
+            <div class="glass-panel p-6">
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fas fa-plus-circle mr-2 text-teal-400"></i>Yeni Avatar Parçası Ekle</h3>
+                <p class="text-slate-400 text-sm mb-4"><i class="fas fa-info-circle mr-1"></i> Dosya formatı: <strong>512x512 piksel, PNG</strong> (şeffaf arka plan). Dosya adı otomatik olarak item_key olarak kullanılır.</p>
+                
+                <form action="/admin/avatar-items/add" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Kategori</label>
+                        <select name="category" required class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg px-3 py-2.5 focus:outline-none focus:border-teal-500">
+                            <option value="eyes">👀 Gözler</option>
+                            <option value="mouth">👄 Ağız</option>
+                            <option value="head">🎩 Kafa/Şapka</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Görünen Ad</label>
+                        <input type="text" name="display_name" placeholder="Örn: Anime Gözleri" required class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg px-3 py-2.5 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Fiyat (Puan)</label>
+                        <input type="number" name="price" value="0" min="0" required class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg px-3 py-2.5 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">PNG Dosya (512x512)</label>
+                        <input type="file" name="avatar_file" accept=".png" required class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg px-3 py-2 text-sm file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-teal-600 file:text-white file:text-sm file:font-medium file:cursor-pointer focus:outline-none">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white font-bold py-2.5 px-4 rounded-lg transition-all">
+                            <i class="fas fa-upload mr-1"></i> Yükle & Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- KATEGORİ FİLTRELERİ -->
+            <div class="flex space-x-3">
+                <button onclick="filterItems('all')" class="filter-btn active px-4 py-2 rounded-lg text-sm font-bold bg-slate-700 text-white transition-colors" data-filter="all">Tümü</button>
+                <button onclick="filterItems('eyes')" class="filter-btn px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition-colors" data-filter="eyes">👀 Gözler</button>
+                <button onclick="filterItems('mouth')" class="filter-btn px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition-colors" data-filter="mouth">👄 Ağız</button>
+                <button onclick="filterItems('head')" class="filter-btn px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition-colors" data-filter="head">🎩 Kafa</button>
+            </div>
+
+            <!-- PARÇA LİSTESİ -->
+            <div class="glass-panel overflow-hidden">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Önizleme</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Anahtar / Ad</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Durum</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Fiyat</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (items.length > 0) { %>
+                            <% items.forEach(function(item) { %>
+                                <tr class="border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors item-row" data-category="<%= item.category %>">
+                                    <td class="px-6 py-3">
+                                        <div class="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden">
+                                            <img src="/avatar-assets/<%= item.item_key %>.png" alt="<%= item.display_name %>" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-image text-slate-500\'></i>';">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-3">
+                                        <% if (item.category === 'eyes') { %>
+                                            <span class="px-2 py-1 rounded-md text-xs font-bold bg-blue-500/20 text-blue-300">👀 Gözler</span>
+                                        <% } else if (item.category === 'mouth') { %>
+                                            <span class="px-2 py-1 rounded-md text-xs font-bold bg-pink-500/20 text-pink-300">👄 Ağız</span>
+                                        <% } else { %>
+                                            <span class="px-2 py-1 rounded-md text-xs font-bold bg-purple-500/20 text-purple-300">🎩 Kafa</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="px-6 py-3">
+                                        <div class="text-sm font-bold text-white"><%= item.display_name %></div>
+                                        <div class="text-xs text-slate-500 font-mono"><%= item.item_key %></div>
+                                    </td>
+                                    <td class="px-6 py-3 text-center">
+                                        <% if (item.is_default) { %>
+                                            <span class="px-2 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">Ücretsiz</span>
+                                        <% } else { %>
+                                            <span class="px-2 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300">Premium</span>
+                                        <% } %>
+                                        <% if (!item.is_active) { %>
+                                            <span class="ml-1 px-2 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-300">Pasif</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="px-6 py-3 text-right">
+                                        <span class="text-sm font-bold <%= item.price > 0 ? 'text-amber-300' : 'text-slate-500' %>"><%= item.price %> Puan</span>
+                                    </td>
+                                    <td class="px-6 py-3 text-center">
+                                        <button onclick="toggleItem('<%= item.id %>', '<%= item.display_name %>', <%= item.price %>, <%= item.is_active ? 'false' : 'true' %>)" class="text-slate-400 hover:text-teal-400 mx-1 transition-colors" title="<%= item.is_active ? 'Pasif Yap' : 'Aktif Yap' %>">
+                                            <i class="fas <%= item.is_active ? 'fa-eye-slash' : 'fa-eye' %>"></i>
+                                        </button>
+                                        <button onclick="deleteItem('<%= item.id %>')" class="text-slate-400 hover:text-red-400 mx-1 transition-colors" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                                    <i class="fas fa-inbox text-4xl mb-3 block"></i>
+                                    Henüz avatar parçası bulunmuyor.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function filterItems(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-700', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-400');
+            });
+            event.target.classList.remove('bg-slate-800', 'text-slate-400');
+            event.target.classList.add('bg-slate-700', 'text-white');
+            
+            document.querySelectorAll('.item-row').forEach(row => {
+                if (category === 'all' || row.dataset.category === category) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleItem(id, displayName, price, newActiveState) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/avatar-items/edit/' + id;
+
+            const fields = { display_name: displayName, price: price };
+            if (newActiveState === true || newActiveState === 'true') {
+                fields.is_active = 'on';
+            }
+
+            for (const [key, value] of Object.entries(fields)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function deleteItem(id) {
+            if (!confirm('Bu parçayı silmek istediğinize emin misiniz?')) return;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/avatar-items/delete/' + id;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

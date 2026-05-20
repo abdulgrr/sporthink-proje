@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandık Yönetimi | Sporthink Gamification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-200">
+    <!-- SOL MENÜ -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">Sporthink Panel</h1>
+        </div>
+                        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="/admin" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-home w-6"></i> Dashboard</a>
+            <a href="/admin/products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-shopping-bag w-6"></i> Ürünler (Dükkan)</a>
+            <a href="/admin/chests" class="flex items-center px-4 py-3 bg-gradient-to-r from-teal-500/20 to-blue-500/20 text-teal-300 border border-teal-500/30 rounded-lg transition-colors"><i class="fas fa-box-open w-6"></i> Sandık Sistemi</a>
+            <a href="/admin/users" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-users w-6"></i> Kullanıcılar</a>
+            <a href="/admin/stats" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-chart-line w-6"></i> İstatistik ve Loglar</a>
+            <a href="/admin/notifications" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-bell w-6"></i> Bildirimler</a>
+            <a href="/admin/tips" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-lightbulb w-6"></i> İpuçları (Tips)</a>
+            <a href="/admin/settings" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-cogs w-6"></i> Ayarlar</a>
+            <a href="/admin/badges" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-award w-6"></i> Rozetler (Badges)</a>
+            <a href="/admin/avatar-items" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-astronaut w-6"></i> Avatar Parçaları</a>
+            <a href="/admin/admins" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-shield w-6"></i> Admin Yönetimi</a>
+        </nav>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="flex-1 flex flex-col bg-slate-900 overflow-y-auto relative">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-slate-700 glass-panel sticky top-0 z-10 rounded-none border-t-0 border-l-0 border-r-0">
+            <h2 class="text-xl font-semibold flex items-center">
+                <% if(type) { %>
+                    <a href="/admin/chests" class="text-slate-400 hover:text-white mr-3 transition-colors"><i class="fas fa-arrow-left"></i></a>
+                    <i class="fas fa-box-open mr-2 text-teal-400"></i>
+                    <%= type === 'daily' ? 'Günlük Sandık' : 'Haftalık Sandık' %> İçerikleri
+                <% } else { %>
+                    <i class="fas fa-box-open mr-2 text-teal-400"></i> Sandık Yönetimi
+                <% } %>
+            </h2>
+            <div class="flex items-center space-x-4">
+                <% if(type) { %>
+                    <button onclick="toggleModal('addDropModal')" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow transition-colors font-medium text-sm">
+                        <i class="fas fa-plus mr-1"></i> Yeni Ödül Ekle
+                    </button>
+                <% } %>
+                <a href="/admin/logout" class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Çıkış
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6">
+            <% if(!type) { %>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Daily Chest Card -->
+                    <a href="/admin/chests/daily" class="group block">
+                        <div class="glass-panel p-8 text-center border border-slate-700 transition-all duration-300 hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.15)] hover:-translate-y-1 h-full">
+                            <i class="fas fa-sun text-yellow-400 text-5xl mb-4 group-hover:scale-110 transition-transform"></i>
+                            <h4 class="text-2xl font-bold text-white mb-2">Günlük Sandık</h4>
+                            <p class="text-slate-400 text-sm">Ücretsiz veya düşük puanlı günlük deneme hakları</p>
+                        </div>
+                    </a>
+
+                    <!-- Weekly Chest Card -->
+                    <a href="/admin/chests/weekly" class="group block">
+                        <div class="glass-panel p-8 text-center border border-slate-700 transition-all duration-300 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 h-full">
+                            <i class="fas fa-calendar-week text-blue-400 text-5xl mb-4 group-hover:scale-110 transition-transform"></i>
+                            <h4 class="text-2xl font-bold text-white mb-2">Haftalık Sandık</h4>
+                            <p class="text-slate-400 text-sm">Daha değerli ödüller, mega indirimler ve premium kuponlar</p>
+                        </div>
+                    </a>
+                </div>
+            <% } else { %>
+                <% 
+                    let totalProb = 0;
+                    drops.forEach(d => totalProb += parseFloat(d.probability_percent));
+                %>
+                
+                <div class="glass-panel p-4 border border-slate-700 mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h6 class="text-slate-400 text-sm font-medium">Toplam Düşürme İhtimali Doluluğu (<span id="totalProbDisplay"><%= totalProb %></span> / 100)</h6>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-3 relative">
+                        <div class="<%= totalProb > 100 ? 'bg-red-500' : 'bg-emerald-500' %> h-3 rounded-full transition-all duration-500" style="width: <%= totalProb > 100 ? 100 : totalProb %>%"></div>
+                        <% if(totalProb < 100) { %>
+                            <div class="absolute inset-y-0 right-0 border-l border-white/20 h-full"></div>
+                        <% } %>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <% if(totalProb != 100) { %>
+                            <p class="<%= totalProb > 100 ? 'text-red-400' : 'text-yellow-400' %> text-xs"><i class="fas fa-exclamation-triangle mr-1"></i> <%= totalProb > 100 ? 'Dikkat: İhtimaller toplamı 100ü aştı!' : 'Uyarı: İhtimallerin toplamı tam 100 olmalıdır.' %></p>
+                        <% } else { %>
+                            <p class="text-emerald-400 text-xs"><i class="fas fa-check-circle mr-1"></i> İhtimaller mükemmel dengelenmiş (%100).</p>
+                        <% } %>
+                        <p class="text-slate-400 text-xs">Kalan: <span class="font-bold <%= (100-totalProb) < 0 ? 'text-red-400' : 'text-teal-400' %>">%<%= (100 - totalProb).toFixed(2) %></span></p>
+                    </div>
+                </div>
+
+                <div class="glass-panel overflow-hidden border border-slate-700">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/50 border-b border-slate-700 text-slate-400 text-sm">
+                                    <th class="p-4 font-medium">#</th>
+                                    <th class="p-4 font-medium">Ödül Tipi</th>
+                                    <th class="p-4 font-medium">Ödül Değeri</th>
+                                    <th class="p-4 font-medium">Çıkma İhtimali (%)</th>
+                                    <th class="p-4 font-medium text-right">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700/50 text-sm">
+                                <% if(drops.length > 0) { %>
+                                    <% drops.forEach(drop => { %>
+                                        <tr class="hover:bg-slate-800/50 transition-colors">
+                                            <td class="p-4 text-slate-500"><%= drop.id %></td>
+                                            <td class="p-4">
+                                                <% if(drop.reward_type === 'points') { %> 
+                                                    <span class="bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 px-2 py-1 rounded text-xs font-medium"><i class="fas fa-coins mr-1"></i> Puan</span>
+                                                <% } else if(drop.reward_type === 'product') { %> 
+                                                    <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-1 rounded text-xs font-medium"><i class="fas fa-tag mr-1"></i> Ürün/Kupon</span>
+                                                <% } else if(drop.reward_type === 'raffle') { %> 
+                                                    <span class="bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-1 rounded text-xs font-medium"><i class="fas fa-ticket-alt mr-1"></i> Çekiliş Hakkı</span>
+                                                <% } else { %> 
+                                                    <span class="bg-slate-500/20 text-slate-300 border border-slate-500/30 px-2 py-1 rounded text-xs font-medium"><%= drop.reward_type %></span> 
+                                                <% } %>
+                                            </td>
+                                            <td class="p-4 font-bold text-white"><%= drop.reward_value %></td>
+                                            <td class="p-4">
+                                                <div class="flex items-center">
+                                                    <span class="mr-3 font-medium w-12"><%= drop.probability_percent %>%</span>
+                                                    <div class="flex-1 bg-slate-800 rounded-full h-1.5 max-w-[100px]">
+                                                        <div class="bg-blue-400 h-1.5 rounded-full" style="width: <%= drop.probability_percent %>%"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="p-4 text-right flex justify-end space-x-2">
+                                                <button onclick="openEditModal('<%= JSON.stringify(drop) %>')" class="text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 hover:bg-blue-500/20 px-3 py-1.5 rounded border border-blue-500/30">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="/admin/chests/drops/delete/<%= drop.id %>" method="POST" class="inline-block" onsubmit="return confirm('Bu ödülü sandıktan kaldırmak istediğinize emin misiniz?');">
+                                                    <input type="hidden" name="chest_name" value="<%= type %>">
+                                                    <button type="submit" class="text-red-400 hover:text-red-300 transition-colors bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded border border-red-500/30">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="p-8 text-center text-slate-500 italic">Henüz bu sandık için içerik eklenmedi.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Add Drop Modal -->
+                <div id="addDropModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+                    <div class="bg-slate-800 border border-slate-600 rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="addDropModalContent">
+                        <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+                            <h3 class="text-lg font-bold text-white">Yeni Ödül Ekle</h3>
+                            <button onclick="toggleModal('addDropModal')" class="text-slate-400 hover:text-white transition-colors"><i class="fas fa-times text-xl"></i></button>
+                        </div>
+                        <form action="/admin/chests/drops" method="POST" class="p-6 space-y-4">
+                            <input type="hidden" name="chest_name" value="<%= type %>">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1">Ödül Tipi</label>
+                                <select name="reward_type" required class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                                    <option value="points">Puan</option>
+                                    <option value="product">Kupon / Ürün</option>
+                                    <option value="raffle">Çekiliş Hakkı</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1">Ödül Değeri (örn: 50, %20 İndirim)</label>
+                                <input type="text" name="reward_value" required class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1 flex justify-between">
+                                    <span>Çıkma İhtimali Yüzdesi (%)</span>
+                                    <button type="button" onclick="fillRemaining('addDropProb')" class="text-xs text-blue-400 hover:text-blue-300">Kalanı Tamamla (%<%= (100 - totalProb).toFixed(2) %>)</button>
+                                </label>
+                                <input type="number" id="addDropProb" step="0.01" max="100" name="probability_percent" required placeholder="Örn: 15.5" class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="pt-4 flex justify-end space-x-3">
+                                <button type="button" onclick="toggleModal('addDropModal')" class="px-4 py-2 rounded text-slate-300 hover:bg-slate-700 transition-colors">İptal</button>
+                                <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors shadow">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Edit Drop Modal -->
+                <div id="editDropModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+                    <div class="bg-slate-800 border border-slate-600 rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="editDropModalContent">
+                        <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+                            <h3 class="text-lg font-bold text-white">Ödülü Düzenle</h3>
+                            <button onclick="toggleModal('editDropModal')" class="text-slate-400 hover:text-white transition-colors"><i class="fas fa-times text-xl"></i></button>
+                        </div>
+                        <form action="/admin/chests/drops/edit" method="POST" class="p-6 space-y-4">
+                            <input type="hidden" name="id" id="editDropId">
+                            <input type="hidden" name="chest_name" value="<%= type %>">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1">Ödül Tipi</label>
+                                <select name="reward_type" id="editRewardType" required class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                                    <option value="points">Puan</option>
+                                    <option value="product">Kupon / Ürün</option>
+                                    <option value="raffle">Çekiliş Hakkı</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1">Ödül Değeri</label>
+                                <input type="text" name="reward_value" id="editRewardValue" required class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1 flex justify-between">
+                                    <span>Çıkma İhtimali Yüzdesi (%)</span>
+                                    <span id="editRemainingLabel" class="text-xs text-slate-500"></span>
+                                </label>
+                                <input type="number" id="editDropProb" step="0.01" max="100" name="probability_percent" required class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="pt-4 flex justify-end space-x-3">
+                                <button type="button" onclick="toggleModal('editDropModal')" class="px-4 py-2 rounded text-slate-300 hover:bg-slate-700 transition-colors">İptal</button>
+                                <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors shadow">Güncelle</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <script>
+                    const currentTotalProb = <%= totalProb %>;
+
+                    function toggleModal(modalID) {
+                        const modal = document.getElementById(modalID);
+                        const content = document.getElementById(modalID + 'Content');
+                        if (modal.classList.contains('hidden')) {
+                            modal.classList.remove('hidden');
+                            void modal.offsetWidth;
+                            modal.classList.remove('opacity-0');
+                            content.classList.remove('scale-95');
+                        } else {
+                            modal.classList.add('opacity-0');
+                            content.classList.add('scale-95');
+                            setTimeout(() => {
+                                modal.classList.add('hidden');
+                            }, 300);
+                        }
+                    }
+
+                    function fillRemaining(inputId) {
+                        const remaining = (100 - currentTotalProb).toFixed(2);
+                        if (remaining > 0) {
+                            document.getElementById(inputId).value = remaining;
+                        }
+                    }
+
+                    function openEditModal(dropJson) {
+                        const drop = JSON.parse(dropJson);
+                        document.getElementById('editDropId').value = drop.id;
+                        document.getElementById('editRewardType').value = drop.reward_type;
+                        document.getElementById('editRewardValue').value = drop.reward_value;
+                        document.getElementById('editDropProb').value = drop.probability_percent;
+                        
+                        const otherTotal = currentTotalProb - drop.probability_percent;
+                        const remaining = (100 - otherTotal).toFixed(2);
+                        document.getElementById('editRemainingLabel').innerText = `Diğerleri toplam: %${otherTotal.toFixed(2)}, Kalan max: %${remaining}`;
+                        
+                        toggleModal('editDropModal');
+                    }
+                </script>
+            <% } %>
+        </div>
+    </main>
+</body>
+</html>

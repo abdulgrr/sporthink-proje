@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İstatistikler & Loglar | Sporthink Gamification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-200">
+    <aside class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">Sporthink Panel</h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="/admin" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-home w-6"></i> Dashboard</a>
+            <a href="/admin/products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-shopping-bag w-6"></i> Ürünler (Dükkan)</a>
+            <a href="/admin/chests" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-box-open w-6"></i> Sandık Sistemi</a>
+            <a href="/admin/users" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-users w-6"></i> Kullanıcılar</a>
+            <a href="/admin/stats" class="flex items-center px-4 py-3 bg-gradient-to-r from-teal-500/20 to-blue-500/20 text-teal-300 border border-teal-500/30 rounded-lg transition-colors"><i class="fas fa-chart-line w-6"></i> İstatistik ve Loglar</a>
+            <a href="/admin/notifications" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-bell w-6"></i> Bildirimler</a>
+            <a href="/admin/tips" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-lightbulb w-6"></i> İpuçları (Tips)</a>
+            <a href="/admin/settings" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-cogs w-6"></i> Ayarlar</a>
+            <a href="/admin/badges" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-award w-6"></i> Rozetler (Badges)</a>
+            <a href="/admin/avatar-items" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-astronaut w-6"></i> Avatar Parçaları</a>
+            <a href="/admin/admins" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-shield w-6"></i> Admin Yönetimi</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col bg-slate-900 overflow-y-auto relative">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-slate-700 glass-panel sticky top-0 z-10 rounded-none border-t-0 border-l-0 border-r-0">
+            <h2 class="text-xl font-semibold"><i class="fas fa-chart-pie mr-2 text-indigo-400"></i> İstatistikler & Log Monitörü</h2>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-slate-400"><i class="fas fa-user-shield mr-1"></i> Admin</span>
+                <a href="/admin/logout" class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Çıkış
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Adım Grafiği -->
+                <div class="glass-panel p-6 border border-slate-700 flex flex-col">
+                    <h5 class="text-slate-400 font-medium mb-4 flex items-center"><i class="fas fa-walking mr-2 text-blue-400"></i> Son 7 Günlük Adım Hacmi</h5>
+                    <div class="flex-1 relative min-h-[250px]">
+                        <canvas id="stepChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Kayıt Grafiği -->
+                <div class="glass-panel p-6 border border-slate-700 flex flex-col">
+                    <h5 class="text-slate-400 font-medium mb-4 flex items-center"><i class="fas fa-user-plus mr-2 text-emerald-400"></i> Son 7 Günlük Kayıtlar</h5>
+                    <div class="flex-1 relative min-h-[250px]">
+                        <canvas id="regChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Totals Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 border border-slate-700 text-center flex-1 flex flex-col items-center justify-center relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-blue-500/10"><i class="fas fa-users text-8xl"></i></div>
+                    <i class="fas fa-users text-4xl text-blue-400 mb-3 z-10"></i>
+                    <h3 class="text-4xl font-bold text-white mb-1 z-10"><%- totalUsers %></h3>
+                    <p class="text-slate-400 text-sm z-10">Toplam Kullanıcı</p>
+                </div>
+                <div class="glass-panel p-6 border border-slate-700 text-center flex-1 flex flex-col items-center justify-center relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-emerald-500/10"><i class="fas fa-tags text-8xl"></i></div>
+                    <i class="fas fa-tags text-4xl text-emerald-400 mb-3 z-10"></i>
+                    <h3 class="text-4xl font-bold text-white mb-1 z-10"><%- totalProducts %></h3>
+                    <p class="text-slate-400 text-sm z-10">Aktif Çeşitli Ürünler</p>
+                </div>
+            </div>
+
+            <!-- Ek Istatistikler -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- En Aktif 5 -->
+                <div class="glass-panel p-6 border border-slate-700">
+                    <h5 class="text-slate-400 font-medium mb-4"><i class="fas fa-trophy mr-2 text-amber-400"></i> En Aktif 5 Kullanıcı</h5>
+                    <div class="space-y-3">
+                        <% if(topUsers && topUsers.length > 0) { %>
+                            <% topUsers.forEach((u, i) => { %>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-300"><span class="text-amber-400 font-bold mr-2">#<%- i+1 %></span> <%- u.first_name %> <%- u.last_name %></span>
+                                    <span class="text-emerald-400 font-mono text-xs"><%- u.total_points %> P</span>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-slate-500 text-sm italic">Veri yok</p>
+                        <% } %>
+                    </div>
+                </div>
+                <!-- Populer Rozetler -->
+                <div class="glass-panel p-6 border border-slate-700">
+                    <h5 class="text-slate-400 font-medium mb-4"><i class="fas fa-award mr-2 text-purple-400"></i> Popüler Rozetler</h5>
+                    <div class="space-y-3">
+                        <% if(popularBadges && popularBadges.length > 0) { %>
+                            <% popularBadges.forEach(b => { %>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-300 truncate mr-2"><%- b.name %></span>
+                                    <span class="text-purple-400 font-mono text-xs whitespace-nowrap"><%- b.earn_count %> kez</span>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-slate-500 text-sm italic">Veri yok</p>
+                        <% } %>
+                    </div>
+                </div>
+                <!-- Sandik -->
+                <div class="glass-panel p-6 border border-slate-700">
+                    <h5 class="text-slate-400 font-medium mb-4"><i class="fas fa-box-open mr-2 text-yellow-400"></i> Sandık İstatistikleri</h5>
+                    <div class="text-center py-4">
+                        <h3 class="text-4xl font-bold text-white"><%- totalChests || 0 %></h3>
+                        <p class="text-slate-400 text-sm mt-1">Toplam Açılan Sandık</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Table for KVKK -->
+            <div class="glass-panel p-6 border border-slate-700">
+                <h5 class="text-slate-400 font-medium mb-4 border-b border-slate-700 pb-3 flex items-center">
+                    <i class="fas fa-shield-alt mr-2 text-yellow-500"></i> Sistem İşlem Logları (KVKK)
+                </h5>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-slate-400 text-sm border-b border-slate-700">
+                                <th class="pb-3 font-medium">Admin</th>
+                                <th class="pb-3 font-medium">Aksiyon</th>
+                                <th class="pb-3 font-medium">Detay</th>
+                                <th class="pb-3 font-medium">Tarih</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/50 text-sm">
+                            <% if(logs && logs.length > 0) { %>
+                                <% logs.forEach(log => { %>
+                                    <tr class="hover:bg-slate-800/30 transition-colors">
+                                        <td class="py-3 text-slate-500 font-mono text-xs"><%- log.admin_name || log.user_id %></td>
+                                        <td class="py-3">
+                                            <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-xs"><%- log.action %></span>
+                                        </td>
+                                        <td class="py-3 text-slate-300"><%- log.details %></td>
+                                        <td class="py-3 text-slate-500 text-xs"><%- new Date(log.created_at).toLocaleString('tr-TR') %></td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" class="py-8 text-center text-slate-500 italic">Aksiyon logu bulunamadı.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Data for Step Chart
+        const rawStepData = <%- JSON.stringify(chartData || []) %>;
+        const stepLabels = rawStepData.map(d => new Date(d.day).toLocaleDateString('tr-TR', {weekday:'short', day:'numeric'}));
+        const stepValues = rawStepData.map(d => d.total_steps);
+
+        // Data for Reg Chart
+        const rawRegData = <%- JSON.stringify(regChartData || []) %>;
+        const regLabels = rawRegData.map(d => new Date(d.day).toLocaleDateString('tr-TR', {weekday:'short', day:'numeric'}));
+        const regValues = rawRegData.map(d => d.new_users);
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        
+        // Step Chart Init
+        new Chart(document.getElementById('stepChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: stepLabels,
+                datasets: [{
+                    label: 'Toplam Atılan Adım',
+                    data: stepValues,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0f172a',
+                    pointBorderColor: '#3b82f6',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(51, 65, 85, 0.5)', drawBorder: false }, border: { display: false } },
+                    x: { grid: { display: false }, border: { display: false } }
+                }
+            }
+        });
+
+        // Reg Chart Init
+        new Chart(document.getElementById('regChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: regLabels,
+                datasets: [{
+                    label: 'Yeni Kayıtlar',
+                    data: regValues,
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(51, 65, 85, 0.5)', drawBorder: false }, border: { display: false }, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false }, border: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

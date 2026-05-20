@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Panel | Sporthink Gamification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-200">
+    <!-- SOL MENÜ -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">Sporthink Panel</h1>
+        </div>
+                        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="/admin" class="flex items-center px-4 py-3 bg-gradient-to-r from-teal-500/20 to-blue-500/20 text-teal-300 border border-teal-500/30 rounded-lg transition-colors"><i class="fas fa-home w-6"></i> Dashboard</a>
+            <a href="/admin/products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-shopping-bag w-6"></i> Ürünler (Dükkan)</a>
+            <a href="/admin/chests" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-box-open w-6"></i> Sandık Sistemi</a>
+            <a href="/admin/users" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-users w-6"></i> Kullanıcılar</a>
+            <a href="/admin/stats" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-chart-line w-6"></i> İstatistik ve Loglar</a>
+            <a href="/admin/notifications" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-bell w-6"></i> Bildirimler</a>
+            <a href="/admin/tips" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-lightbulb w-6"></i> İpuçları (Tips)</a>
+            <a href="/admin/settings" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-cogs w-6"></i> Ayarlar</a>
+            <a href="/admin/badges" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-award w-6"></i> Rozetler (Badges)</a>
+            <a href="/admin/avatar-items" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-astronaut w-6"></i> Avatar Parçaları</a>
+            <a href="/admin/admins" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-shield w-6"></i> Admin Yönetimi</a>
+        </nav>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="flex-1 flex flex-col bg-slate-900 overflow-y-auto">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-slate-700 glass-panel sticky top-0 z-10 rounded-none border-t-0 border-l-0 border-r-0">
+            <h2 class="text-xl font-semibold"><i class="fas fa-home mr-2 text-teal-400"></i> Ana Panel</h2>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-slate-400"><i class="fas fa-user-shield mr-1"></i> <%= adminUsername || 'Admin' %></span>
+                <a href="/admin/logout" class="text-sm text-red-400 hover:text-red-300 transition-colors"><i class="fas fa-sign-out-alt mr-1"></i> Çıkış</a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-8">
+            <!-- Hoş Geldin -->
+            <div class="glass-panel p-6 border border-teal-500/20 bg-gradient-to-r from-teal-500/5 to-blue-500/5">
+                <h2 class="text-2xl font-bold text-white mb-1">Hoş geldin, <span class="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-400"><%= adminName || adminUsername %></span> 👋</h2>
+                <p class="text-slate-400 text-sm">Sporthink yönetim paneline hoş geldin. İşte bugünkü özet:</p>
+            </div>
+
+            <!-- İstatistik Kartları -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                <div class="glass-panel p-5 border border-emerald-500/20">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Toplam Kullanıcı</p>
+                            <h3 class="text-3xl font-bold text-white mt-1"><%= stats.total_users || 0 %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-500/15"><i class="fas fa-users text-emerald-400 text-lg"></i></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 border border-blue-500/20">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Bugün Aktif</p>
+                            <h3 class="text-3xl font-bold text-white mt-1"><%= stats.active_today || 0 %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500/15"><i class="fas fa-signal text-blue-400 text-lg"></i></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 border border-purple-500/20">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Bu Hafta Yeni Kayıt</p>
+                            <h3 class="text-3xl font-bold text-white mt-1"><%= stats.new_this_week || 0 %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-purple-500/15"><i class="fas fa-user-plus text-purple-400 text-lg"></i></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 border border-amber-500/20">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Bugün Atılan Adım</p>
+                            <h3 class="text-3xl font-bold text-white mt-1"><%= (stats.steps_today || 0).toLocaleString('tr-TR') %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-500/15"><i class="fas fa-walking text-amber-400 text-lg"></i></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 border border-red-500/20">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Bu Hafta Verilen Rozet</p>
+                            <h3 class="text-3xl font-bold text-white mt-1"><%= stats.badges_this_week || 0 %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-red-500/15"><i class="fas fa-award text-red-400 text-lg"></i></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 border border-teal-500/20">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Toplam Feed Postu</p>
+                            <h3 class="text-3xl font-bold text-white mt-1"><%= stats.total_feed || 0 %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-teal-500/15"><i class="fas fa-stream text-teal-400 text-lg"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Kısayollar -->
+            <h4 class="text-slate-400 font-medium uppercase tracking-wider text-sm">Hızlı Kısayollar</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                <a href="/admin/users" class="group glass-panel p-5 border border-slate-700 hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-emerald-500/15"><i class="fas fa-users text-emerald-400"></i></div>
+                        <span class="font-semibold text-slate-300 group-hover:text-emerald-300 transition-colors">Kullanıcılar</span>
+                    </div>
+                </a>
+                <a href="/admin/notifications" class="group glass-panel p-5 border border-slate-700 hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-500/15"><i class="fas fa-bell text-blue-400"></i></div>
+                        <span class="font-semibold text-slate-300 group-hover:text-blue-300 transition-colors">Bildirim Gönder</span>
+                    </div>
+                </a>
+                <a href="/admin/badges" class="group glass-panel p-5 border border-slate-700 hover:border-amber-500/40 hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-amber-500/15"><i class="fas fa-award text-amber-400"></i></div>
+                        <span class="font-semibold text-slate-300 group-hover:text-amber-300 transition-colors">Rozetler</span>
+                    </div>
+                </a>
+                <a href="/admin/settings" class="group glass-panel p-5 border border-slate-700 hover:border-purple-500/40 hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-purple-500/15"><i class="fas fa-cogs text-purple-400"></i></div>
+                        <span class="font-semibold text-slate-300 group-hover:text-purple-300 transition-colors">Ayarlar</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

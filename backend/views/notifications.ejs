@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bildirim Yönetimi | Sporthink Gamification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-200">
+    <!-- SOL MENÜ -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500">Sporthink Panel</h1>
+        </div>
+                        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="/admin" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-home w-6"></i> Dashboard</a>
+            <a href="/admin/products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-shopping-bag w-6"></i> Ürünler (Dükkan)</a>
+            <a href="/admin/chests" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-box-open w-6"></i> Sandık Sistemi</a>
+            <a href="/admin/users" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-users w-6"></i> Kullanıcılar</a>
+            <a href="/admin/stats" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-chart-line w-6"></i> İstatistik ve Loglar</a>
+            <a href="/admin/notifications" class="flex items-center px-4 py-3 bg-gradient-to-r from-teal-500/20 to-blue-500/20 text-teal-300 border border-teal-500/30 rounded-lg transition-colors"><i class="fas fa-bell w-6"></i> Bildirimler</a>
+            <a href="/admin/tips" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-lightbulb w-6"></i> İpuçları (Tips)</a>
+            <a href="/admin/settings" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-cogs w-6"></i> Ayarlar</a>
+            <a href="/admin/badges" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-award w-6"></i> Rozetler (Badges)</a>
+            <a href="/admin/avatar-items" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-astronaut w-6"></i> Avatar Parçaları</a>
+            <a href="/admin/admins" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"><i class="fas fa-user-shield w-6"></i> Admin Yönetimi</a>
+        </nav>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="flex-1 flex flex-col bg-slate-900 overflow-y-auto relative">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-slate-700 glass-panel sticky top-0 z-10 rounded-none border-t-0 border-l-0 border-r-0">
+            <h2 class="text-xl font-semibold"><i class="fas fa-paper-plane mr-2 text-blue-400"></i> Bildirim Yönetimi</h2>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-slate-400"><i class="fas fa-user-shield mr-1"></i> Admin</span>
+                <a href="/admin/logout" class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Çıkış
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <!-- Yeni Bildirim Gönder -->
+                <div class="lg:col-span-2 glass-panel p-6 border border-slate-700 h-fit">
+                    <h5 class="text-lg font-bold mb-6 text-white border-b border-slate-700 pb-2"><i class="fas fa-broadcast-tower mr-2 text-blue-400"></i> Yeni Global Bildirim</h5>
+                    <form action="/admin/notifications/send" method="POST" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Başlık</label>
+                            <input type="text" name="title" required maxlength="100" placeholder="Örn: Yeni Hafta Başladı!" class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Mesaj (Açıklama)</label>
+                            <textarea name="message" rows="4" required placeholder="Kullanıcılara iletilmek istenen duyuru..." class="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded shadow transition-all">
+                            <i class="fas fa-paper-plane mr-2"></i> Herkese Gönder
+                        </button>
+                        <p class="text-xs text-slate-500 text-center mt-3 mt-4">Bu bildirim sistemdeki tüm kullanıcılara anında gönderilir.</p>
+                    </form>
+                </div>
+
+                <!-- Geçmiş Bildirimler -->
+                <div class="lg:col-span-3 glass-panel p-6 border border-slate-700 h-full">
+                    <h5 class="text-lg font-bold mb-6 text-white border-b border-slate-700 pb-2"><i class="fas fa-history mr-2 text-indigo-400"></i> Gönderilen Global Bildirimler</h5>
+                    
+                    <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                        <% if(notifications.length === 0) { %>
+                            <div class="text-center text-slate-500 py-12">
+                                <i class="fas fa-bell-slash text-5xl mb-4 text-slate-600"></i>
+                                <p>Henüz hiç global bildirim gönderilmedi.</p>
+                            </div>
+                        <% } else { %>
+                            <% notifications.forEach(function(notif) { %>
+                                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-4 hover:bg-slate-800 transition-colors">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h6 class="font-bold text-blue-400"><%= notif.title %></h6>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded"><%= new Date(notif.created_at).toLocaleString('tr-TR') %></span>
+                                            <form action="/admin/notifications/delete" method="POST" class="inline" onsubmit="return confirm('Bu bildirimi tüm kullanıcılardan silmek istediğinize emin misiniz?');">
+                                                <input type="hidden" name="title" value="<%= notif.title %>">
+                                                <input type="hidden" name="message" value="<%= notif.message %>">
+                                                <button type="submit" class="text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded transition-colors text-xs border border-red-500/20" title="Sil">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-slate-300"><%= notif.message %></p>
+                                </div>
+                            <% }); %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
